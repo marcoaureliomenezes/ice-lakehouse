@@ -1,0 +1,12 @@
+spark-warehouse
+
+
+services/conf/.minio.conf
+services/conf/.notebook.conf
+
+mnt/datasets
+mnt/warehouse
+
+docker-handler.sh
+.Trash*
+.ipynb_checkpoints
