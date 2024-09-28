@@ -10,3 +10,6 @@ mnt/warehouse
 docker-handler.sh
 .Trash*
 .ipynb_checkpoints
+
+venv/
+
