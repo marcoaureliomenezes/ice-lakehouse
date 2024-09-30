@@ -13,3 +13,5 @@ docker-handler.sh
 
 venv/
 
+__pycache__
+nessie.properties

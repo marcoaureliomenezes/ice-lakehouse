@@ -4,3 +4,5 @@ jupyterlab==4.2.5
 delta-spark==3.1.0
 pyiceberg[s3fs,hive]==0.7.1
 rand-engine==0.1.1
+trino
+ipython_sql

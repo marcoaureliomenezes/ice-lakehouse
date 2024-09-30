@@ -17,16 +17,14 @@ services:
     container_name: notebook
     <<: *default_config
     env_file:
-      - ./conf/.notebook.conf
+      - ./conf/.minio.conf
     volumes:
-      - ../mnt/warehouse:/app/warehouse
-      - ../mnt/notebooks:/app/notebooks
-      - ../mnt/datasets:/app/datasets
+      - ../mnt/rosemberg:/app/notebooks
     ports:
       - 8888:8888
-      - 8080:8080
-      - 10000:10000
-      - 10001:10001
+      # - 8080:8080
+      # - 10000:10000
+      # - 10001:10001
     environment:
       NESSIE_URI: http://nessie:19120/api/v1
       MINIO_HOST: http://minio:9000
@@ -34,17 +32,15 @@ services:
 
 
   minio:
-    image: minio/minio:RELEASE.2023-07-21T21-12-44Z
+    image: bitnami/minio:2024.9.22
     container_name: minio
     env_file:
       - ./conf/.minio.conf
     <<: *default_config
     volumes:
-      - minio_dev_vol:/data
+      - bitnami_minio_vol:/bitnami/minio/data
     ports:
       - 9001:9001
-      - 9000:9000
-    command: ["server", "/data", "--console-address", ":9001"]
 
 
   postgres_nessie:
@@ -55,7 +51,7 @@ services:
       POSTGRES_PASSWORD: nessie
       POSTGRES_DB: nessie
     volumes:
-      - pg_nessie_dev_vol:/var/lib/postgresql/data
+      - postgres_nessie_vol:/var/lib/postgresql/data
     <<: *default_config
 
 
@@ -75,14 +71,14 @@ services:
       - postgres_nessie
 
   dremio:
-    image: dremio/dremio-oss:24.1
+    image: dremio/dremio-oss:25.1
     ports:
       - 9047:9047
       # - 31010:31010
       # - 32010:32010
     container_name: dremio
     volumes:
-      - dremio_dev_vol:/opt/dremio/data
+      - dremio_warehouse_vol:/opt/dremio/data
     <<: *default_config
 
   ################################################################################################################
@@ -93,7 +89,7 @@ services:
     container_name: spark-master
     <<: *default_config
     env_file:
-      - ./conf/.notebook.conf
+      - ./conf/.minio.conf
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -113,7 +109,7 @@ services:
     <<: *default_config
     container_name: spark-worker
     env_file:
-      - ./conf/.notebook.conf
+      - ./conf/.minio.conf
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
@@ -128,10 +124,24 @@ services:
       test: [ "CMD", "ls" ]
       <<: *default_healthcheck
 
+
+  trino:
+    image: trinodb/trino
+    container_name: trino
+    <<: *default_config
+    environment:
+      - DISCOVERY_SERVER_ENABLED=true
+      - HTTP_PORT=8080
+    volumes:
+      - ../mnt/trino/conf:/etc/trino/catalog
+    ports:
+      - "28080:8080"
+
+
 volumes:
-  minio_dev_vol:
-  dremio_dev_vol:
-  pg_nessie_dev_vol:
+  bitnami_minio_vol:
+  dremio_warehouse_vol:
+  postgres_nessie_vol:
 
 networks:
   ice_lakehouse:

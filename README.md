@@ -20,14 +20,14 @@ Esse repositório contém um Lakehouse construído utilizando as seguintes tecno
 ### Source Nessie
 
 - Name:  `nessie`
-- Nessie Endpoint URL: `http://nessie/api/v2`
+- Nessie Endpoint URL: `http://nessie:19120/api/v2`
 - Nessie Authentication Type: `None`
 - AWS Access Key: `access_key`
 - AWS Access Secret: `access_secret`
 - Connection Properties:
-  - `fs.s3a.path.style.access=true`
-  - `dremio.s3.compat=true`
-  - `fs.s3a.endpoint=http://minio:9000`
+  - `fs.s3a.path.style.access   true`
+  - `dremio.s3.compat   true`
+  - `fs.s3a.endpoint    minio:9000`
 
 ### Source Minio
 
@@ -35,6 +35,11 @@ Esse repositório contém um Lakehouse construído utilizando as seguintes tecno
 - AWS Access Key: `access_key`
 - AWS Access Secret: `access_secret`
 
+- Check `Enable compatibility mode`
+- Connection Properties:
+  - `fs.s3a.path.style.access  true`
+  - `dremio.s3.compat   true`
+  - `fs.s3a.endpoint    minio:9000`
 
 
 Esse repositório contém um Lakehouse construído utilizando as seguintes tecnologias:
